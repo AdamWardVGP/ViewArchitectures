@@ -7,6 +7,7 @@ import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
 import android.view.View;
 
+import award.viewarchitectures.CommentsActivity;
 import award.viewarchitectures.R;
 import award.viewarchitectures.models.GithubIssue;
 
@@ -68,7 +69,7 @@ public class GithubIssueViewModel extends BaseObservable {
     }
 
     private void launchCommentsActivity() {
-//        context.startActivity(CommentsActivity.getStartIntent(context, post));
+        context.startActivity(CommentsActivity.getStartIntent(context, issue));
     }
 }
 

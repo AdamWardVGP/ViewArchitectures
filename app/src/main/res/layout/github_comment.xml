@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable name="viewModel" type="award.viewarchitectures.viewModel.GithubCommentViewModel"/>
+    </data>
+
+    <RelativeLayout
+        android:id="@+id/github_comment_root"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin">
+
+        <TextView
+            android:id="@+id/comment_author"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="@{viewModel.commentAuthor}"
+            tools:text="MyUsernameHere"
+            android:textColor="@color/va_blue"
+            android:textSize="@dimen/text_headline"/>
+
+        <TextView
+            android:id="@+id/comment_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{viewModel.commentTime}"
+            tools:text="a few minutes ago"
+            android:textColor="@color/dark_grey"
+            android:textSize="@dimen/text_small_body"
+            android:layout_toRightOf="@id/comment_author"
+            android:layout_alignBaseline="@id/comment_author"/>
+
+        <TextView
+            android:id="@+id/comment_body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginBottom="8dp"
+            android:text="@{viewModel.commentBody}"
+            tools:text="This would be the comment body showing all the text which I typed."
+            android:textColor="@color/black_87pc"
+            android:textSize="@dimen/text_body"
+            android:layout_below="@+id/comment_author"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/comment_body"
+            android:background="@color/light_grey" />
+
+    </RelativeLayout>
+</layout>
