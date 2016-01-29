@@ -35,8 +35,8 @@ public class GithubIssueAdapter extends RecyclerView.Adapter<GithubIssueAdapter.
 
     @Override
     public void onBindViewHolder(BindingHolder holder, int position) {
-        GithubIssueBinding postBinding = holder.binding;
-        postBinding.setViewModel(new GithubIssueViewModel(mContext, mIssues.get(position)));
+        GithubIssueBinding issueBinding = holder.binding;
+        issueBinding.setViewModel(new GithubIssueViewModel(mContext, mIssues.get(position)));
     }
 
     @Override
@@ -53,7 +53,7 @@ public class GithubIssueAdapter extends RecyclerView.Adapter<GithubIssueAdapter.
         private GithubIssueBinding binding;
 
         public BindingHolder(GithubIssueBinding binding) {
-            super(binding.cardView);
+            super(binding.githubIssueRoot);
             this.binding = binding;
         }
     }

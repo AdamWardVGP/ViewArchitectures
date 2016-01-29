@@ -35,7 +35,7 @@ public class GithubIssuesFragment extends BaseFragment implements SwipeRefreshLa
     @Bind(R.id.swipe_container)
     SwipeRefreshLayout mSwipeRefreshLayout;
 
-    @Bind(R.id.recycler_stories)
+    @Bind(R.id.recycler_issues)
     RecyclerView mRecyclerView;
 
     @Bind(R.id.layout_offline)
@@ -64,7 +64,6 @@ public class GithubIssuesFragment extends BaseFragment implements SwipeRefreshLa
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        super.onCreate(savedInstanceState);
         mSubscriptions = new CompositeSubscription();
         mIssues = new ArrayList<>();
         mRequestManager = ViewArchitecturesApplication.getRequestManager(getActivity());
@@ -73,7 +72,7 @@ public class GithubIssuesFragment extends BaseFragment implements SwipeRefreshLa
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View fragmentView = inflater.inflate(R.layout.fragment_mvvmgithub_issues, container, false);
+        View fragmentView = inflater.inflate(R.layout.fragment_github_issues, container, false);
         ButterKnife.bind(this, fragmentView);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setColorSchemeResources(R.color.va_blue);
@@ -133,7 +132,8 @@ public class GithubIssuesFragment extends BaseFragment implements SwipeRefreshLa
     }
 
     private void getIssues() {
-        mSubscriptions.add(mRequestManager.getIssues("AdamWardVGP","GithubSample","")
+        mSubscriptions.add(mRequestManager.getIssues(
+                getResources().getString(R.string.repo_owner), getResources().getString(R.string.repo_name), "")
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(mRequestManager.getScheduler())
                 .subscribe(new Subscriber<List<GithubIssue>>() {

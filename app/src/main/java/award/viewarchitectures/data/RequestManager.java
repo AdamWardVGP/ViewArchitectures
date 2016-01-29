@@ -2,6 +2,7 @@ package award.viewarchitectures.data;
 
 import java.util.List;
 
+import award.viewarchitectures.models.GithubComment;
 import award.viewarchitectures.models.GithubIssue;
 import rx.Observable;
 import rx.Scheduler;
@@ -22,5 +23,9 @@ public class RequestManager {
 
     public Observable<List<GithubIssue>> getIssues(String user, String repo, String state) {
         return mGithubAPI.getIssuesList(user, repo, state);
+    }
+
+    public Observable<List<GithubComment>> getIssueComments(String user, String repo, String id) {
+        return mGithubAPI.getIssueComments(user, repo, id);
     }
 }
