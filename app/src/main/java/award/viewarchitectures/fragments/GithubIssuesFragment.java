@@ -23,6 +23,7 @@ import award.viewarchitectures.adapters.GithubIssueAdapter;
 import award.viewarchitectures.data.RequestManager;
 import award.viewarchitectures.models.GithubIssue;
 import award.viewarchitectures.util.DataUtils;
+import award.viewarchitectures.util.DialogFactory;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import rx.Subscriber;
@@ -147,6 +148,10 @@ public class GithubIssuesFragment extends BaseFragment implements SwipeRefreshLa
                         hideLoadingViews();
                         Log.e("MVVMGIF", "There was a problem loading the issues list " + e);
                         e.printStackTrace();
+                        DialogFactory.createSimpleOkErrorDialog(
+                                getActivity(),
+                                getString(R.string.error_issues)
+                        ).show();
                     }
 
                     @Override

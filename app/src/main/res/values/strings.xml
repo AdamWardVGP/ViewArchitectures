@@ -10,4 +10,10 @@
     <string name="issue_number">#</string>
     <string name="issue_author">&#160;- %s</string>
 
+    <!-- Dialog strings -->
+    <string name="dialog_action_ok">OK</string>
+    <string name="dialog_error_title">Error</string>
+    <string name="error_comments">Unable to load the comments for this issue.</string>
+    <string name="error_issues">Unable to load the issues for this repository.</string>
+
 </resources>

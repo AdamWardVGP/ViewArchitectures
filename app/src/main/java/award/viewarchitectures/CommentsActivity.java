@@ -23,6 +23,7 @@ import award.viewarchitectures.data.RequestManager;
 import award.viewarchitectures.models.GithubComment;
 import award.viewarchitectures.models.GithubIssue;
 import award.viewarchitectures.util.DataUtils;
+import award.viewarchitectures.util.DialogFactory;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import rx.Observer;
@@ -124,6 +125,10 @@ public class CommentsActivity extends AppCompatActivity {
                     @Override
                     public void onError(Throwable e) {
                         hideLoadingViews();
+                        DialogFactory.createSimpleOkErrorDialog(
+                                CommentsActivity.this,
+                                getString(R.string.error_comments)
+                        ).show();
                         Log.e("MVVMGIF", "There was a problem loading the issues list " + e);
                         e.printStackTrace();
                     }
