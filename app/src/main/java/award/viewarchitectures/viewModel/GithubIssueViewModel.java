@@ -8,6 +8,7 @@ import android.text.style.UnderlineSpan;
 import android.view.View;
 
 import award.viewarchitectures.CommentsActivity;
+import award.viewarchitectures.IssueActivity;
 import award.viewarchitectures.R;
 import award.viewarchitectures.models.GithubIssue;
 
@@ -63,9 +64,13 @@ public class GithubIssueViewModel extends BaseObservable {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                launchCommentsActivity();
+                launchIssueActivity();
             }
         };
+    }
+
+    private void launchIssueActivity() {
+        context.startActivity(IssueActivity.getStartIntent(context,issue));
     }
 
     private void launchCommentsActivity() {
