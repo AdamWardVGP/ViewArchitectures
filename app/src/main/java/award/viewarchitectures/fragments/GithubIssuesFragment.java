@@ -26,6 +26,7 @@ import award.viewarchitectures.util.DataUtils;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -49,7 +50,7 @@ public class GithubIssuesFragment extends BaseFragment implements SwipeRefreshLa
 
     private RequestManager mRequestManager;
     private GithubIssueAdapter mIssueAdapter;
-    private CompositeSubscription mSubscriptions;
+    private Subscription mSubscription;
     private List<GithubIssue> mIssues;
 
     public static GithubIssuesFragment newInstance() {
@@ -64,7 +65,6 @@ public class GithubIssuesFragment extends BaseFragment implements SwipeRefreshLa
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mSubscriptions = new CompositeSubscription();
         mIssues = new ArrayList<>();
         mRequestManager = ViewArchitecturesApplication.getRequestManager(getActivity());
         mIssueAdapter = new GithubIssueAdapter(getActivity());
@@ -85,14 +85,15 @@ public class GithubIssuesFragment extends BaseFragment implements SwipeRefreshLa
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mSubscriptions.unsubscribe();
+
+        if(mSubscription != null)
+            mSubscription.unsubscribe();
     }
 
     @Override
     public void onRefresh() {
-        mSubscriptions.unsubscribe();
-        if (mIssueAdapter != null)
-            mIssueAdapter.setItems(new ArrayList<GithubIssue>());
+        if(mSubscription != null)
+            mSubscription.unsubscribe();
         getIssues();
     }
 
@@ -132,7 +133,7 @@ public class GithubIssuesFragment extends BaseFragment implements SwipeRefreshLa
     }
 
     private void getIssues() {
-        mSubscriptions.add(mRequestManager.getIssues(
+        mSubscription = mRequestManager.getIssues(
                 getResources().getString(R.string.repo_owner), getResources().getString(R.string.repo_name), "")
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(mRequestManager.getScheduler())
@@ -155,6 +156,6 @@ public class GithubIssuesFragment extends BaseFragment implements SwipeRefreshLa
                         mIssues.addAll(issues);
                         mIssueAdapter.notifyDataSetChanged();
                     }
-                }));
+                });
     }
 }
