@@ -70,6 +70,9 @@ public class GithubIssueViewModel extends BaseObservable {
 
     private void launchCommentsActivity() {
         context.startActivity(CommentsActivity.getStartIntent(context, issue));
+
+        //TODO what if i wanted to show a snackbar when there are no comments? I dont have a reference to the parent container...
+
     }
 }
 
