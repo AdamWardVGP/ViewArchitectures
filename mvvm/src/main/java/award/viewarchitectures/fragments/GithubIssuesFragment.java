@@ -1,5 +1,6 @@
 package award.viewarchitectures.fragments;
 
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
@@ -7,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,18 +21,15 @@ import award.viewarchitectures.R;
 import award.viewarchitectures.ViewArchitecturesApplication;
 import award.viewarchitectures.adapters.GithubIssueAdapter;
 import award.viewarchitectures.data.RequestManager;
+import award.viewarchitectures.databinding.FragmentGithubIssuesBinding;
 import award.viewarchitectures.models.GithubIssue;
-import award.viewarchitectures.util.DataUtils;
-import award.viewarchitectures.util.DialogFactory;
+import award.viewarchitectures.viewModel.GithubIssuePageViewModel;
+import award.viewarchitectures.viewModel.GithubIssuePageViewModel.IssuePageVMListener;
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import rx.Subscriber;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.subscriptions.CompositeSubscription;
 
 
-public class GithubIssuesFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
+public class GithubIssuesFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener, IssuePageVMListener {
 
     @Bind(R.id.swipe_container)
     SwipeRefreshLayout mSwipeRefreshLayout;
@@ -40,19 +37,12 @@ public class GithubIssuesFragment extends BaseFragment implements SwipeRefreshLa
     @Bind(R.id.recycler_issues)
     RecyclerView mRecyclerView;
 
-    @Bind(R.id.layout_offline)
-    LinearLayout mOfflineContainer;
-
-    @Bind(R.id.progress_indicator)
-    ProgressBar mProgressBar;
-
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
 
-    private RequestManager mRequestManager;
-    private GithubIssueAdapter mIssueAdapter;
-    private Subscription mSubscription;
-    private List<GithubIssue> mIssues;
+    private GithubIssuePageViewModel mViewModel;
+    private
+    GithubIssueAdapter mAdapter;
 
     public static GithubIssuesFragment newInstance() {
         GithubIssuesFragment issuesFragment = new GithubIssuesFragment();
@@ -66,35 +56,37 @@ public class GithubIssuesFragment extends BaseFragment implements SwipeRefreshLa
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mIssues = new ArrayList<>();
-        mRequestManager = ViewArchitecturesApplication.getRequestManager(getActivity());
-        mIssueAdapter = new GithubIssueAdapter(getActivity());
+        mViewModel = new GithubIssuePageViewModel(getContext(),this);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View fragmentView = inflater.inflate(R.layout.fragment_github_issues, container, false);
-        ButterKnife.bind(this, fragmentView);
-        mSwipeRefreshLayout.setOnRefreshListener(this);
-        mSwipeRefreshLayout.setColorSchemeResources(R.color.va_blue);
+        FragmentGithubIssuesBinding binding = DataBindingUtil.inflate(inflater, R.layout.fragment_github_issues, container, false);
+
+        ButterKnife.bind(this, binding.getRoot());
+
         setupToolbar();
         setupRecyclerView();
-        loadStoriesIfNetworkConnected();
-        return fragmentView;
+
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.va_blue);
+
+
+        binding.setViewModel(mViewModel);
+        mViewModel.requestIssues();
+
+
+        return binding.getRoot();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(mSubscription != null)
-            mSubscription.unsubscribe();
     }
 
     @Override
     public void onRefresh() {
-        if(mSubscription != null)
-            mSubscription.unsubscribe();
-        getIssues();
+        mViewModel.requestIssues();
     }
 
     private void setupToolbar() {
@@ -108,58 +100,18 @@ public class GithubIssuesFragment extends BaseFragment implements SwipeRefreshLa
     private void setupRecyclerView() {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setHasFixedSize(true);
-        mIssueAdapter.setItems(mIssues);
-        mRecyclerView.setAdapter(mIssueAdapter);
+        mAdapter = new GithubIssueAdapter(getActivity());
+        mRecyclerView.setAdapter(mAdapter);
     }
 
-    private void loadStoriesIfNetworkConnected() {
-        if (DataUtils.isNetworkAvailable(getActivity())) {
-            showOfflineLayout(false);
-            getIssues();
-        } else {
-            showOfflineLayout(true);
-        }
+    @Override
+    public void onRepositoriesChanged(List<GithubIssue> issues) {
+        mAdapter.setItems(issues);
+        mAdapter.notifyDataSetChanged();
     }
 
-    private void hideLoadingViews() {
-        mProgressBar.setVisibility(View.GONE);
+    @Override
+    public void onFinishRefreshing() {
         mSwipeRefreshLayout.setRefreshing(false);
-    }
-
-    private void showOfflineLayout(boolean isOffline) {
-        mOfflineContainer.setVisibility(isOffline ? View.VISIBLE : View.GONE);
-        mRecyclerView.setVisibility(isOffline ? View.GONE : View.VISIBLE);
-        mProgressBar.setVisibility(isOffline ? View.GONE : View.VISIBLE);
-    }
-
-    private void getIssues() {
-        mSubscription = mRequestManager.getIssues(
-                getResources().getString(R.string.repo_owner), getResources().getString(R.string.repo_name), "")
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(mRequestManager.getScheduler())
-                .subscribe(new Subscriber<List<GithubIssue>>() {
-                    @Override
-                    public void onCompleted() {
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        hideLoadingViews();
-                        Log.e("MVVMGIF", "There was a problem loading the issues list " + e);
-                        e.printStackTrace();
-                        DialogFactory.createSimpleOkErrorDialog(
-                                getActivity(),
-                                getString(R.string.error_issues)
-                        ).show();
-                    }
-
-                    @Override
-                    public void onNext(List<GithubIssue> issues) {
-                        hideLoadingViews();
-                        mIssues.clear();
-                        mIssues.addAll(issues);
-                        mIssueAdapter.notifyDataSetChanged();
-                    }
-                });
     }
 }

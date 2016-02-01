@@ -1,57 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/bg_light_grey">
+<layout>
 
-    <RelativeLayout
+    <data>
+        <variable name="viewModel" type="award.viewarchitectures.viewModel.GithubIssuePageViewModel" />
+    </data>
+
+    <android.support.design.widget.CoordinatorLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/root_issues_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:background="@color/bg_light_grey">
 
-        <android.support.v4.widget.SwipeRefreshLayout
-            android:id="@+id/swipe_container"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recycler_issues"
+            <android.support.v4.widget.SwipeRefreshLayout
+                android:id="@+id/swipe_container"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingTop="@dimen/activity_vertical_margin"
-                android:paddingBottom="@dimen/activity_vertical_margin"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin"
-                android:clipToPadding="false"/>
+                android:layout_height="match_parent">
 
-        </android.support.v4.widget.SwipeRefreshLayout>
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recycler_issues"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingTop="@dimen/activity_vertical_margin"
+                    android:paddingBottom="@dimen/activity_vertical_margin"
+                    android:paddingLeft="@dimen/activity_horizontal_margin"
+                    android:paddingRight="@dimen/activity_horizontal_margin"
+                    android:clipToPadding="false"
+                    android:visibility="@{viewModel.mRecyclerVisibility}"/>
 
-        <ProgressBar
-            style="?android:attr/progressBarStyleLarge"
-            android:id="@+id/progress_indicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"/>
+            </android.support.v4.widget.SwipeRefreshLayout>
 
-        <include layout="@layout/layout_offline"/>
+            <ProgressBar
+                style="?android:attr/progressBarStyleLarge"
+                android:id="@+id/progress_indicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:visibility="@{viewModel.mLoadingVisibility}"/>
 
-    </RelativeLayout>
 
-    <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fitsSystemWindows="true">
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/layout_offline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="@{viewModel.mErrorVisibility}">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:text="@string/error_connection"
+                    android:textColor="@color/black_87pc"
+                    android:textSize="@dimen/text_large_body" />
+
+                <Button
+                    android:id="@+id/button_try_again"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp"
+                    android:background="@drawable/selector_button"
+                    android:clickable="true"
+                    android:enabled="true"
+                    android:text="@string/try_again"
+                    android:textColor="@color/white"
+                    android:onClick="@{viewModel.requestIssues}"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:layout_scrollFlags="scroll|enterAlways"
-            android:background="@color/va_blue"
-            app:theme="@style/AppTheme.ActionBar"/>
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true">
 
-    </android.support.design.widget.AppBarLayout>
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_scrollFlags="scroll|enterAlways"
+                android:background="@color/va_blue"
+                app:theme="@style/AppTheme.ActionBar"/>
 
-</android.support.design.widget.CoordinatorLayout>
+        </android.support.design.widget.AppBarLayout>
+
+    </android.support.design.widget.CoordinatorLayout>
+</layout>
