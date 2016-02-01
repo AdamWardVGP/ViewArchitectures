@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/github_issue_root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="2dp"
+    android:layout_marginBottom="2dp"
+    card_view:cardCornerRadius="2dp"
+    card_view:cardUseCompatPadding="true">
+
+    <LinearLayout
+        android:id="@+id/container_issue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:background="@drawable/touchable_background_white">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/text_issue_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    tools:text="#1220"
+                    android:textSize="@dimen/text_body"
+                    android:textColor="@color/va_blue"/>
+
+                <TextView
+                    android:id="@+id/text_issue_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    tools:text="Issue Test Title"
+                    android:textColor="@color/black_87pc"
+                    android:textSize="@dimen/text_large_title"
+                    android:layout_toRightOf="@+id/text_issue_number"
+                    android:layout_alignBaseline="@id/text_issue_number"/>
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/text_issue_body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                tools:text="This is some sample body text of what might appear in the card"
+                android:textColor="@color/black_87pc"
+                android:textSize="@dimen/text_small_body"/>
+
+            <TextView
+                android:id="@+id/text_issue_author"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="FakeAuthor"
+                android:bufferType="spannable"
+                android:textColor="@color/black_87pc"
+                android:textSize="@dimen/text_small_body"/>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/light_grey" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@color/white">
+
+            <TextView
+                android:id="@+id/text_view_issue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:background="@drawable/touchable_background_white"
+                android:clickable="true"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_small_body"
+                android:textStyle="bold"
+                android:text="@string/view_button"/>
+
+            <TextView
+                android:id="@+id/text_view_comments"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:background="@drawable/touchable_background_white"
+                android:clickable="true"
+                android:textColor="@color/va_blue"
+                android:textSize="@dimen/text_small_body"
+                android:text="@string/comments_button"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>
